@@ -1,0 +1,48 @@
+﻿@page "/page"
+@rendermode InteractiveServer
+
+
+
+<h3>Todos (@(todoItems.Where(x => x.IsChecked).Count()))</h3>
+
+<input @bind="Message" />
+<button @onclick="AddTodoItem">Añadir</button>
+
+@foreach (var item in todoItems)
+{
+    <TodoItemLi Item="@item" eventCallback="@(() => DeleteItem(item.Id))" />
+}
+
+@code {
+    public string Message { get; set; }
+
+    public List<TodoItem> todoItems = new();
+
+    [Inject]
+    public IJSRuntime jSRuntime { get; set; }
+
+    public class TodoItem
+    {
+        public Guid Id { get; set; }
+        public string Message { get; set; }
+        public bool IsChecked { get; set; }
+    }
+    private void AddTodoItem(MouseEventArgs e)
+    {
+        if (!string.IsNullOrWhiteSpace(Message))
+        {
+            todoItems.Add(new() { Message = Message, Id = Guid.NewGuid() });
+            Message = string.Empty;
+        }
+        else
+
+        {
+            jSRuntime.InvokeVoidAsync("alert", "Falta algo!");
+        }
+    }
+
+    private void DeleteItem(Guid id)
+    {
+        todoItems.RemoveAll(x => x.Id == id);
+    }
+}

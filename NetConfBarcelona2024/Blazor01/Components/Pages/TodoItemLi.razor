@@ -1,0 +1,23 @@
+﻿@using static Blazor01.Components.Pages.Todos
+@rendermode InteractiveServer
+
+<li>
+    @Item.Message - <input type="checkbox" @bind="Item.IsChecked" /> - <button @onclick="Delete" class="btn btn-danger">
+        Borrar
+    </button>
+</li>
+
+@code {
+    [Parameter]
+    public TodoItem Item { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback eventCallback { get; set; }
+
+    private void Delete(MouseEventArgs e)
+    {
+        // logica
+
+        eventCallback.InvokeAsync();
+    }
+}
